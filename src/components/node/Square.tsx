@@ -37,7 +37,6 @@ export function Square({selected}: NodeProps) {
                 position={Position.Bottom}
                 className="-bottom-5 w-3 h-3 bg-blue-400/80"
             />
-            <input/>
         </div>
     )
 }
