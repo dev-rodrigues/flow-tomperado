@@ -47,11 +47,12 @@ function App() {
         <div className="w-screen h-screen">
             <ReactFlow
                 nodeTypes={NODE_TYPES}
-                nodes={INITIAL_ELEMENTS}
+                nodes={nodes}
                 connectionMode={ConnectionMode.Loose}
                 edges={edges}
                 onConnect={onConnect}
                 onEdgesChange={onEdgesChange}
+                onNodesChange={onNodesChange}
             >
                 <Background
                     gap={12}
