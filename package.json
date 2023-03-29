@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@radix-ui/react-toolbar": "^1.0.3",
+    "@reactflow/node-resizer": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "reactflow": "^11.7.0"
