@@ -1,5 +1,5 @@
 import {Route, Switch} from "react-router-dom";
-import Index from "../pages/index";
+import Index from "../pages/home";
 
 import Board from "../pages/board";
 
