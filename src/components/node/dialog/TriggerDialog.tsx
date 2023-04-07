@@ -1,3 +1,4 @@
+import {FormEvent, useState} from "react";
 import Modal from 'react-modal';
 import {
     Box,
@@ -9,35 +10,67 @@ import {
     SimpleGrid,
     VStack,
     Select,
-    HStack, Button
+    HStack, Button, useToast
 } from "@chakra-ui/react";
 import {FaRegTimesCircle, MdArrowDropDown} from "react-icons/all";
-import {Input} from "../../form/Input";
-import {TriggerData} from "../Trigger";
-import {FormEvent, useState} from "react";
 
+import {Input} from "../../Form/Input";
+import {TriggerData} from "../Trigger";
 
 interface Props {
+    data: TriggerData,
     isOpen: boolean;
     onRequestClose: () => void;
     onRequestSave: (type: string, apiName: string) => void;
 }
 
 export function TriggerDialog({
+                                  data,
                                   isOpen,
                                   onRequestClose,
                                   onRequestSave
-}: Props) {
+                              }: Props) {
+
+    const toast = useToast()
 
     const [formData, setFormData] = useState<TriggerData>({
-        type: '',
-        apiName: '',
+        type: data.type ? data.type : '',
+        apiName: data.apiName ? data.apiName : '',
     })
 
     const handleSaveSubmit = (e: FormEvent) => {
         e.preventDefault();
+
+        const errors = isInvalidForm()
+
+        if (errors.length > 0) {
+            errors.forEach(it => {
+                toast({
+                    position: 'top-right',
+                    title: 'Validation error',
+                    status: 'error',
+                    duration: 2000,
+                    isClosable: false,
+                    description: it,
+                })
+            })
+            return
+        }
+
         onRequestSave(formData.type, formData.apiName);
         onRequestClose();
+    }
+
+    function isInvalidForm(): string[] {
+        let errors: string[] = []
+
+        if (formData.apiName === '') {
+            errors.push('O nome da API é obrigatório')
+        }
+        if (formData.type === '') {
+            errors.push('O tipo da API é obrigatório')
+        }
+        return errors
     }
 
     return (
@@ -52,19 +85,19 @@ export function TriggerDialog({
                 <button
                     type="button"
                     onClick={onRequestClose}
-                    >
-                    <FaRegTimesCircle size={25} />
+                >
+                    <FaRegTimesCircle size={25} color="black"/>
                 </button>
             </Flex>
 
             <Box
+                as="form"
                 mt="8"
                 flex="1"
                 borderRadius={8}
-                bg="gray.800"
-                p="8"
-                >
-                <Heading size="lg" fontWeight="normal">
+                p="8">
+
+                <Heading size="lg" fontWeight="normal" color="black">
                     Configure
                 </Heading>
 
@@ -74,51 +107,49 @@ export function TriggerDialog({
                     <SimpleGrid minChildWidth="240px" spacing="8" width="100%">
                         <Input
                             pk={"apiName"}
-                            onChange={(e) => setFormData({...formData, apiName: e.target.value})}
                             label={"Trigger name"}
                             type="text"
+                            onChange={(e) => setFormData({...formData, apiName: e.target.value})}
                         />
                     </SimpleGrid>
                     <SimpleGrid minChildWidth="240px" spacing="8" width="100%">
                         <FormControl>
-                            <FormLabel htmlFor="apiMethod">Method</FormLabel>
+                            <FormLabel htmlFor="apiMethod" color="black">Method</FormLabel>
                             <Select
-                                onChange={(e) => setFormData({...formData, type: e.target.value })}
+                                id={"type"}
+                                onChange={(e) => setFormData({...formData, type: e.target.value})}
                                 icon={<MdArrowDropDown/>}
-                                id={"triggerMethod"}
+                                color={"black"}
                                 size='lg'
-                                borderColor='pink.500'
-                                _hover={{
-                                    borderColor: 'pink.500'
-                                }}
-                                placeholder='-- selecione --'
-                            >
-                                <option style={{background: "#353646"}} value="API">API</option>
-                                <option style={{background: "#353646"}} value="GRP">GRP</option>
-                                <option style={{background: "#353646"}} value="CRON">CRON</option>
+                                placeholder='--Select--'>
+                                <option value="API">API</option>
+                                <option value="GRPC">GRPC</option>
+                                <option value="CRON">CRON</option>
                             </Select>
                         </FormControl>
                     </SimpleGrid>
                 </VStack>
+
                 <Flex mt="8" justify="flex-end">
                     <HStack spacing="4">
                         <Button
                             size="md"
-                            colorScheme="whiteAlpha"
-                            onClick={() => {}}
-                        >
+                            colorScheme="red"
+                            onClick={onRequestClose}>
                             Cancel
                         </Button>
 
-                        <Button type="submit"
-                                marginTop="6"
-                                colorScheme="purple"
-                                onClick={(e) => handleSaveSubmit(e)}
-                                size="md">
+                        <Button
+                            onClick={handleSaveSubmit}
+                            type="submit"
+                            marginTop="6"
+                            colorScheme="green"
+                            size="md">
                             Save
                         </Button>
                     </HStack>
                 </Flex>
+
             </Box>
         </Modal>
     )

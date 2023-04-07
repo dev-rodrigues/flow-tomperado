@@ -1,5 +1,4 @@
 import 'reactflow/dist/style.css';
-
 import {Router} from "react-router-dom";
 
 import history from './history';
@@ -11,9 +10,9 @@ function App() {
     return (
         <>
             <Router history={history}>
-                <Routes />
+                <Routes/>
             </Router>
-            <GlobalStyle />
+            <GlobalStyle/>
         </>
     )
 }

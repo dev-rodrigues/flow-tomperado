@@ -1,20 +1,25 @@
 import {Handle, NodeProps, Position} from "reactflow";
-import {FaCog} from "react-icons/fa";
+import {FaCog, FaTrash} from "react-icons/fa";
 import {TriggerDialog} from "./dialog/TriggerDialog";
-import {useEffect, useState} from "react";
+import {useState} from "react";
+import {HStack, useToast} from "@chakra-ui/react";
 
-export interface TriggerData {
+export type TriggerData = {
     type: string;
     apiName: string;
 }
 
-export function Trigger({}: NodeProps) {
+export function Trigger({
+}: NodeProps) {
 
+    const [showTrash, setShowTrash] = useState(false);
     const [isTriggerDialogOpen, setIsTriggerDialogOpen] = useState(false);
     const [triggerData, setTriggerData] = useState<TriggerData>({
         type: '',
         apiName: '',
     });
+
+    const toast = useToast()
 
     function handleCloseTriggerDialog() {
         setIsTriggerDialogOpen(false);
@@ -27,12 +32,24 @@ export function Trigger({}: NodeProps) {
         });
     }
 
-    useEffect(() => {
-        console.log(triggerData);
-    }, [triggerData]);
-
-    return <>
-        <div className={"bg-pink-500 rounded w-full h-full min-w-[150px] min-h-[100px] p-1"}>
+    return (
+        <div
+            onMouseEnter={() => {
+                console.log("should show trash");
+                setShowTrash(true);
+            }}
+            onMouseLeave={() =>{
+                console.log("should hide trash");
+                setShowTrash(false);
+            }}
+            onDragEnter={() => {
+            }}
+            className={"bg-red-500 rounded w-full h-full min-w-[150px] min-h-[100px] p-1"}
+             style={{
+                    border: "1px solid #fafafa",
+                    boxShadow: "0 0 10px 1px rgba(0,0,0,0.1)",
+             }}
+        >
             <div className="flex justify-center">
                 <span style={{
                     fontWeight: "bold",
@@ -56,15 +73,33 @@ export function Trigger({}: NodeProps) {
                 }}>{triggerData ? triggerData.type : ""}</span>
             </div>
 
-            <div className="flex justify-center items-center h-full">
+            <HStack display="flex" justifyContent="center" mt="15px">
+
                 <button
                     onClick={() => setIsTriggerDialogOpen(true)}
                     className="p-2 rounded-full bg-gray-600 hover:bg-gray-700"
                 >
                     <FaCog/>
                 </button>
-            </div>
 
+                {showTrash && (
+                    <button
+                        onClick={() => {
+                            toast({
+                                position: 'top',
+                                title: "Trigger deleted.",
+                                status: "warning",
+                                duration: 2000,
+                                isClosable: true,
+                            })
+                        }}
+                        className="p-2 rounded-full bg-gray-600 hover:bg-gray-700"
+                    >
+                        <FaTrash/>
+                    </button>
+                )}
+
+            </HStack>
 
             <Handle
                 id={"right"}
@@ -73,11 +108,11 @@ export function Trigger({}: NodeProps) {
                 className="-right-5 w-3 h-3 bg-blue-400/80"
             />
             <TriggerDialog
+                data={triggerData}
                 isOpen={isTriggerDialogOpen}
                 onRequestClose={handleCloseTriggerDialog}
                 onRequestSave={handleSetTriggerData}
             />
         </div>
-
-    </>
+    );
 }
