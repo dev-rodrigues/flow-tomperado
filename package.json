@@ -16,6 +16,7 @@
     "@radix-ui/react-toolbar": "^1.0.3",
     "@reactflow/node-resizer": "^2.1.0",
     "@types/styled-components": "^5.1.26",
+    "axios": "^1.5.1",
     "framer-motion": "^10.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -26,7 +27,7 @@
     "react-spring": "8.0.27",
     "reactflow": "^11.7.0",
     "styled-components": "^5.3.9",
-    "uuid": "^9.0.0",
+    "uuid": "^9.0.1",
     "v4": "^0.0.1",
     "yup": "^1.0.2"
   },
